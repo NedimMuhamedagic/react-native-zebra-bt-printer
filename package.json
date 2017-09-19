@@ -20,11 +20,5 @@
   "bugs": {
     "url": "https://bitbucket.org/cyclelution/react-native-zebra-bt-printer/issues"
   },
-  "homepage": "https://bitbucket.org/cyclelution/react-native-zebra-bt-printer#readme",
-  "dependencies": {
-    "react-native": "^0.46.0"
-  },
-  "peerDependencies": {
-    "react-native": ">=0.40"
-  }
+  "homepage": "https://bitbucket.org/cyclelution/react-native-zebra-bt-printer#readme"
 }

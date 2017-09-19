@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://bitbucket.org/cyclelution/react-native-zebra-bt-printer.git"
+    "url": "git://bitbucket.org/cyclelution/react-native-zebra-bt-printer.git"
   },
   "keywords": [
     "bluetooth",

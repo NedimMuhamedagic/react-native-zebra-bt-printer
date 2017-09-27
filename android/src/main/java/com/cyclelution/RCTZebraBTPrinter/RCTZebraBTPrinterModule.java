@@ -57,9 +57,9 @@ public class RCTZebraBTPrinterModule extends ReactContextBaseJavaModule {
     /**
      * Entry point
      */
-    public void printLabel(String userPrinterSerial, String userLabel, String userText, Promise promise) {
+    public void printLabel(String userPrinterSerial, int userPrintCount, String userText1, String userText2, String userText3, Promise promise) {
 
-        if (D) Log.d(TAG, "printLabel triggered on Android " + userPrinterSerial + " " + userLabel);
+        if (D) Log.d(TAG, "printLabel triggered on Android " + userPrinterSerial + " " + userText1);
         //promise.resolve(true);
 
         if (D) Log.d(TAG, "printLabel connecting to printer");
@@ -102,10 +102,8 @@ public class RCTZebraBTPrinterModule extends ReactContextBaseJavaModule {
 
                 if (D) Log.d(TAG, "printLabel trying to send print job");
 
-                String cpclConfigLabel = "! 0 200 200 304 1\r\n" + "TEXT 0 3 10 10 CYC LABEL START\r\n" + "TEXT 0 3 10 40 "+userLabel+" " + userText + "\r\n" + "BARCODE 128 1 1 40 10 80 "+userLabel+"\r\n" + "TEXT 0 3 10 150 CYC LABEL END\r\n" + "FORM\r\n" + "PRINT\r\n";
-                
-                //"! 0 200 200 304 1\r\n\r\nT", userLabel, userLabel];
-                
+                String cpclConfigLabel = "! 0 200 200 304 "+ userPrintCount + "\r\n" + "TEXT 0 3 10 10 CYC LABEL START\r\n" + "TEXT 0 3 10 40 "+userText1+" " + userText2 + " " + userText3 + "\r\n" + "BARCODE 128 1 1 40 10 80 "+userText1+"\r\n" + "TEXT 0 3 10 150 CYC LABEL END\r\n" + "FORM\r\n" + "PRINT\r\n";
+                                
                 byte[]  configLabel = cpclConfigLabel.getBytes();
 
                 printerConnection.write(configLabel);

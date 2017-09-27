@@ -27,10 +27,13 @@ RCT_EXPORT_MODULE();
 }
 
 #pragma mark - Methods available form Javascript
+
 RCT_EXPORT_METHOD(
     printLabel: (NSString *)userPrinterSerial 
-    userLabel:(NSString *)userLabel 
-    userText:(NSString *)userText
+    userPrintCount:(int)userPrintCount
+    userText1:(NSString *)userText1
+    userText2:(NSString *)userText2
+    userText3:(NSString *)userText3
     resolve: (RCTPromiseResolveBlock)resolve
     rejector:(RCTPromiseRejectBlock)reject){
     
@@ -52,14 +55,14 @@ RCT_EXPORT_METHOD(
         
         if(success == YES){
             
-            NSLog(@"IOS >> Connected %@", userLabel);
+            NSLog(@"IOS >> Connected %@", userText1);
             //NSString *zplData = @"^XA^FO20,20^A0N,25,25^FDThis is a ZPL test.^FS^XZ";
             
             NSString *testLabel;
             
             // offset, dpi, dpi, label height dpi, qty
             
-            testLabel = [NSString stringWithFormat:@"! 0 200 200 304 1\r\nTEXT 0 3 10 10 CYC LABEL START\r\nTEXT 0 3 10 40 %@ %@\r\nBARCODE 128 1 1 40 10 80 %@\r\nTEXT 0 3 10 150 CYC LABEL END\r\nFORM\r\nPRINT\r\n", userLabel, userText, userLabel];
+            testLabel = [NSString stringWithFormat:@"! 0 200 200 304 %d\r\nTEXT 0 3 10 10 CYC LABEL START\r\nTEXT 0 3 10 40 %@ %@ %@\r\nBARCODE 128 1 1 40 10 80 %@\r\nTEXT 0 3 10 150 CYC LABEL END\r\nFORM\r\nPRINT\r\n", userPrintCount, userText1, userText2, userText3, userText1];
             
             NSError *error = nil;
             // Send the data to printer as a byte array.

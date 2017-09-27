@@ -44,23 +44,46 @@ iOS requires the printer serial#.
 Android requires the MAC ADDRESS.
 
 ```javascript
-import ZebraBTPrinter from 'react-native-zebra-bt-printer';
+const printLabel = async (userPrintCount, userText1, userText2, userText3) => {
 
-printLabel = (userPrinterSerial, userLabel) => {
+  bug('printLabel APP');
 
-	this.bug('printLabel APP');
+  if(userText1 === ''){
+    Alert.alert('Your label seems to be missing content!');
+    return false;
+  }
 
-	let userText = 'More text to be included';
+  try {
 
-	ZebraBTPrinter.printLabel(userPrinterSerial, userLabel, userText).then((result) => {
-    	console.log(result);
+    const printerSerial = await AsyncStorage.getItem('printerSerial');
 
-    	if(result === false){
-    		Alert.alert('Print failed, please check printer connection');
-    	}
+    //check if its set
+    if (printerSerial !== null && printerSerial !== '') {
 
-  	})
-  	.catch((err) => console.log(err.message));
+      //check if async has printer serial, throw error if not set
+      let userPrinterSerial = '';
+
+      ZebraBTPrinter.printLabel(printerSerial, userPrintCount, userText1, userText2, userText3).then((result) => {
+        
+        bug(result);
+
+        if (result === false) {
+          Alert.alert('Print failed, please check printer connection');
+        }
+
+      })
+      .catch((err) => bug(err.message));
+
+    } else {
+
+      Alert.alert('Print failed, no printer setup');
+
+    }
+
+  } catch (error) {
+    // Error retrieving data
+
+  } 
 
 }
 

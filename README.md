@@ -1,6 +1,8 @@
 
 # react-native-zebra-bt-printer
 
+This library is built for react native to work with Portable Zebra Bluetooth Printers. This library uses the libraries provided by Zebra. It has been tested with the QLN220, but should work with other QLN series printers that have bluetooth (non BLE mode).
+
 ## Getting started
 
 `$ npm install react-native-zebra-bt-printer --save`
@@ -44,9 +46,11 @@ iOS requires the printer serial#.
 Android requires the MAC ADDRESS.
 
 ```javascript
+import ZebraBTPrinter from 'react-native-zebra-bt-printer';
+
 const printLabel = async (userPrintCount, userText1, userText2, userText3) => {
 
-  bug('printLabel APP');
+  console.log('printLabel APP');
 
   if(userText1 === ''){
     Alert.alert('Your label seems to be missing content!');
@@ -55,39 +59,38 @@ const printLabel = async (userPrintCount, userText1, userText2, userText3) => {
 
   try {
 
+    //Store your printer serial or mac, ios needs serial, android needs mac
     const printerSerial = await AsyncStorage.getItem('printerSerial');
 
-    //check if its set
+    //check if printer is set
     if (printerSerial !== null && printerSerial !== '') {
-
-      //check if async has printer serial, throw error if not set
-      let userPrinterSerial = '';
 
       ZebraBTPrinter.printLabel(printerSerial, userPrintCount, userText1, userText2, userText3).then((result) => {
         
-        bug(result);
+        console.log(result);
 
         if (result === false) {
           Alert.alert('Print failed, please check printer connection');
         }
 
       })
-      .catch((err) => bug(err.message));
+      .catch((err) => console.log(err.message));
 
     } else {
 
-      Alert.alert('Print failed, no printer setup');
+      Alert.alert('Print failed, no printer setup found');
 
     }
 
   } catch (error) {
     // Error retrieving data
-
-  } 
+    console.log('Async getItem failed');
+  }
 
 }
 
 // TODO: What to do with the module?
 RCTZebraBTPrinter;
 ```
-  
+
+See Example. Remember to npm i in example

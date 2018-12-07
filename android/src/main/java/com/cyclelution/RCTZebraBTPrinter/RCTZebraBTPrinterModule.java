@@ -2,6 +2,7 @@ package com.cyclelution.RCTZebraBTPrinter;
 
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.io.IOException;
 import javax.annotation.Nullable;
 
 import android.app.Activity;
@@ -105,14 +106,14 @@ public class RCTZebraBTPrinterModule extends ReactContextBaseJavaModule {
                 String cpclConfigLabel = userText1;
 
                 byte[]  configLabel = cpclConfigLabel.getBytes();
-                try {
                   printerConnection.write(configLabel);
-                } catch (IOException printError) {
-                  if (D) Log.d(TAG, "print image failed");
-                }
 
                 if(imgLocation instanceof String) {
-                  printer.printImage(imgLocation, 0, 0);
+                  try {
+                    printer.printImage(imgLocation, 0, 0);
+                  } catch (IOException printError) {
+                    if (D) Log.d(TAG, "print image failed");
+                  }
                 }
 
                 if (printerConnection instanceof BluetoothConnection) {

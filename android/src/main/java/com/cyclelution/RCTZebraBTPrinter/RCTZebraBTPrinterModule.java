@@ -108,8 +108,8 @@ public class RCTZebraBTPrinterModule extends ReactContextBaseJavaModule {
 
                 printerConnection.write(configLabel);
 
-                if(imgLocation) {
-                  printerConnection.printImage(imgLocation, 0, 0);
+                if(imgLocation !== '') {
+                  printer.printImage(imgLocation, 0, 0);
                 }
 
                 if (printerConnection instanceof BluetoothConnection) {

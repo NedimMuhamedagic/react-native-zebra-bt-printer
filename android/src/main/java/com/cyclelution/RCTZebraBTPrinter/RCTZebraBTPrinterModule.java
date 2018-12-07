@@ -57,7 +57,7 @@ public class RCTZebraBTPrinterModule extends ReactContextBaseJavaModule {
     /**
      * Entry point
      */
-    public void printLabel(String userPrinterSerial, int userPrintCount, String userText1, String userText2, String userText3, Promise promise) {
+    public void printLabel(String userPrinterSerial, int userPrintCount, String userText1, String imgLocation, String userText3, Promise promise) {
 
         if (D) Log.d(TAG, "printLabel triggered on Android " + userPrinterSerial + " " + userText1);
         //promise.resolve(true);
@@ -102,11 +102,15 @@ public class RCTZebraBTPrinterModule extends ReactContextBaseJavaModule {
 
                 if (D) Log.d(TAG, "printLabel trying to send print job");
 
-                String cpclConfigLabel = "! 0 200 200 304 "+ userPrintCount + "\r\n" + "TEXT 0 3 10 10 CYC LABEL START\r\n" + "TEXT 0 3 10 40 "+userText1+" " + userText2 + " " + userText3 + "\r\n" + "BARCODE 128 1 1 40 10 80 "+userText1+"\r\n" + "TEXT 0 3 10 150 CYC LABEL END\r\n" + "FORM\r\n" + "PRINT\r\n";
-                                
+                String cpclConfigLabel = userText1;
+
                 byte[]  configLabel = cpclConfigLabel.getBytes();
 
                 printerConnection.write(configLabel);
+
+                if(imgLocation) {
+                  printerConnection.printImage(imgLocation, 0, 0);
+                }
 
                 if (printerConnection instanceof BluetoothConnection) {
 
@@ -136,7 +140,7 @@ public class RCTZebraBTPrinterModule extends ReactContextBaseJavaModule {
 
         }
 
-        
+
 
     }
 

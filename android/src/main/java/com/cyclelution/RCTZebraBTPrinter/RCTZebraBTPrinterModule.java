@@ -105,8 +105,11 @@ public class RCTZebraBTPrinterModule extends ReactContextBaseJavaModule {
                 String cpclConfigLabel = userText1;
 
                 byte[]  configLabel = cpclConfigLabel.getBytes();
-
-                printerConnection.write(configLabel);
+                try {
+                  printerConnection.write(configLabel);
+                } catch (IOException printError) {
+                  if (D) Log.d(TAG, "print image failed");
+                }
 
                 if(imgLocation instanceof String) {
                   printer.printImage(imgLocation, 0, 0);

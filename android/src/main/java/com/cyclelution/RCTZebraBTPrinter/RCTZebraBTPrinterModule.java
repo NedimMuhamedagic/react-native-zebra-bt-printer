@@ -103,7 +103,7 @@ public class RCTZebraBTPrinterModule extends ReactContextBaseJavaModule {
 
                 if (D) Log.d(TAG, "printLabel trying to send print job");
 
-                String cpclConfigLabel = userText1;
+                String cpclConfigLabel = "! 0 200 200 304 "+ userPrintCount + "\r\n" + "TEXT 0 3 10 10 " + userText1;
 
                 byte[]  configLabel = cpclConfigLabel.getBytes();
                   printerConnection.write(configLabel);

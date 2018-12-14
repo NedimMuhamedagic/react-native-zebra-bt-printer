@@ -1,5 +1,7 @@
 package com.cyclelution.RCTZebraBTPrinter;
 
+import android.os.Looper;
+
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.io.IOException;
@@ -59,92 +61,92 @@ public class RCTZebraBTPrinterModule extends ReactContextBaseJavaModule {
      * Entry point
      */
     public void printLabel(String userPrinterSerial, int userPrintCount, String userText1, String imgLocation, String userText3, Promise promise) {
+      if (D) Log.d(TAG, "printLabel triggered on Android " + userPrinterSerial + " " + userText1);
+      //promise.resolve(true);
 
-        if (D) Log.d(TAG, "printLabel triggered on Android " + userPrinterSerial + " " + userText1);
-        //promise.resolve(true);
+      if (D) Log.d(TAG, "printLabel connecting to printer");
 
-        if (D) Log.d(TAG, "printLabel connecting to printer");
+      printerConnection = null;
 
-        printerConnection = null;
+      printerConnection = new BluetoothConnection(userPrinterSerial);
 
-        printerConnection = new BluetoothConnection(userPrinterSerial);
+      try {
 
-        try {
+          printerConnection.open();
 
-            printerConnection.open();
+          if (D) Log.d(TAG, "printLabel com open");
 
-            if (D) Log.d(TAG, "printLabel com open");
+          ZebraPrinter printer = null;
 
-            ZebraPrinter printer = null;
+          if (printerConnection.isConnected()) {
 
-            if (printerConnection.isConnected()) {
+              try {
 
-                try {
+                  printer = ZebraPrinterFactory.getInstance(printerConnection);
 
-                    printer = ZebraPrinterFactory.getInstance(printerConnection);
+                  PrinterLanguage pl = printer.getPrinterControlLanguage();
 
-                    PrinterLanguage pl = printer.getPrinterControlLanguage();
+              } catch (ConnectionException e) {
 
-                } catch (ConnectionException e) {
+                  if (D) Log.d(TAG, "printLabel com failed to open 2nd stage");
+                  printer = null;
 
-                    if (D) Log.d(TAG, "printLabel com failed to open 2nd stage");
-                    printer = null;
+              } catch (ZebraPrinterLanguageUnknownException e) {
 
-                } catch (ZebraPrinterLanguageUnknownException e) {
+                  if (D) Log.d(TAG, "printLabel print language get failed");
+                  printer = null;
 
-                    if (D) Log.d(TAG, "printLabel print language get failed");
-                    printer = null;
+              }
 
-                }
+          }
 
-            }
+          try {
 
-            try {
+              if (D) Log.d(TAG, "printLabel trying to send print job");
 
-                if (D) Log.d(TAG, "printLabel trying to send print job");
+              String cpclConfigLabel = userText1;
 
-                String cpclConfigLabel = "! 0 200 200 304 "+ userPrintCount + "\r\n" + "TEXT 0 3 10 10 " + userText1;
+              byte[]  configLabel = cpclConfigLabel.getBytes();
+                printerConnection.write(configLabel);
 
-                byte[]  configLabel = cpclConfigLabel.getBytes();
-                  printerConnection.write(configLabel);
+              // if(imgLocation instanceof String) {
+              //   try {
+              //     printer.printImage(imgLocation, 0, 0);
+              //   } catch (IOException printError) {
+              //     if (D) Log.d(TAG, "print image failed");
+              //   }
+              // }
 
-                if(imgLocation instanceof String) {
-                  try {
-                    printer.printImage(imgLocation, 0, 0);
-                  } catch (IOException printError) {
-                    if (D) Log.d(TAG, "print image failed");
-                  }
-                }
+              if (printerConnection instanceof BluetoothConnection) {
 
-                if (printerConnection instanceof BluetoothConnection) {
+                  String friendlyName = ((BluetoothConnection) printerConnection).getFriendlyName();
 
-                    String friendlyName = ((BluetoothConnection) printerConnection).getFriendlyName();
+                  if (D) Log.d(TAG, "printLabel printed with " + friendlyName);
 
-                    if (D) Log.d(TAG, "printLabel printed with " + friendlyName);
+              }
+              printerConnection.close();
 
-                }
+          } catch (ConnectionException e) {
+            printerConnection.close();
 
-            } catch (ConnectionException e) {
+              if (D) Log.d(TAG, "printLabel com failed to open 2nd stage");
+              promise.resolve(false);
 
-                if (D) Log.d(TAG, "printLabel com failed to open 2nd stage");
-                promise.resolve(false);
+          } finally {
+            printerConnection.close();
 
-            } finally {
+              //disconnect();
+              if (D) Log.d(TAG, "printLabel done");
+              promise.resolve(true);
 
-                //disconnect();
-                if (D) Log.d(TAG, "printLabel done");
-                promise.resolve(true);
+          }
 
-            }
+      } catch (ConnectionException e) {
 
-        } catch (ConnectionException e) {
+          if (D) Log.d(TAG, "printLabel com failed to open");
+          promise.resolve(false);
 
-            if (D) Log.d(TAG, "printLabel com failed to open");
-            promise.resolve(false);
-
-        }
-
-
+      }
 
     }
 
